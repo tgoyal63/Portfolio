@@ -10,17 +10,10 @@ const bots = [
     liveBadge: "Live on Among Us India",
     tagline: "Discord bot for Among Us India (44k+): moderation, utility and AI-powered tools.",
     features: [
-      "Moderation, utility & AI features for 44k+ members",
-      "Voice user movement, ban/warn system, AI summaries",
-      "Integrated ModMail system to handle user queries",
-      "Move all users from one voice channel to another or move individual users",
-      "Check user's current joined voice channel instantly",
-      "Suggestion system with configure, handle, approve, reject commands",
-      "Reminder commands for custom reminders and automated moderation reminders",
-      "VCLogs to view voice logs for any user/channel from the last 30 days",
-      "Moderation commands: ban, unban, warn, remove warn, add/view user notes",
-      "AI-powered commands: 'explain' to explain words, 'ask' to ask anything",
-      "AI-powered 'summary' command to summarize last X messages in a channel",
+      "Moderation suite: bans/unbans, warns/notes, ModMail",
+      "Voice controls & logs: move users/channels, quick VC lookup, 30-day VC logs",
+      "Suggestions & reminders: configure/approve/reject, custom and auto-mod reminders",
+      "AI tools: explain/ask and summarize recent messages",
     ],
     images: [
       {
@@ -40,17 +33,10 @@ const bots = [
     liveBadge: "Live on Among Us India",
     tagline: "Private VC and economy bot for paid voice channels and in-server coins.",
     features: [
-      "Pay-as-you-go or one-time billing for private VCs",
-      "In-server economy with coins, !work, !daily, !lb",
-      "Transfer VC ownership, add/remove users, manage roles",
-      "Create private voice channels using in-server coins",
-      "Automatic coin deduction on VC creation (one-time or pay-as-you-go)",
-      "Add/Remove users from your private VC with simple commands",
-      "Add friends to always allow them in your VC without manual access",
-      "Transfer ownership of the VC to another user",
-      "Economy system with commands: !work, !daily, !bal, !lb, !give, !store",
-      "Manager commands for items, roles, and incomes",
-      "Fun games like blackjack, rock-paper-scissors, and guess-the-number",
+      "Private VCs with coin-based billing: pay-as-you-go or one-time",
+      "Access control: add/remove users, friends allowlist, role management, ownership transfer",
+      "In-server economy: coins, work/daily/bal/lb/give/store + manager tools (items/roles/incomes)",
+      "Mini-games: blackjack, rock-paper-scissors, guess-the-number",
     ],
     images: [
       {
