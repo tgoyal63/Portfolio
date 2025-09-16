@@ -10,6 +10,38 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <!-- Top Navigation (Discord-like) -->
+  <header class="discord-nav" role="navigation" aria-label="Primary">
+    <div class="container nav-inner">
+      <div class="nav-left">
+        <button class="icon-btn nav-toggle" id="navToggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="primaryNav">
+          <span class="burger" aria-hidden="true">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+          </span>
+        </button>
+        <a href="#" class="nav-brand" aria-label="Home">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.317 4.369A19.791 19.791 0 0 0 16.558 3c-.2.353-.432.83-.593 1.205a18.27 18.27 0 0 0-4.93 0A7.032 7.032 0 0 0 10.443 3c-1.334.244-2.627.68-3.758 1.369C3.358 7.315 2.557 10.17 2.815 12.977c1.58 1.177 3.104 1.894 4.609 2.37a13.98 13.98 0 0 0 .946-1.522c-1.043-.397-2.03-.912-2.97-1.576c.25-.187.497-.384.737-.587c2.768 1.287 5.776 1.287 8.517 0c.24.203.487.4.737.587c-.94.664-1.927 1.179-2.97 1.576c.27.53.57 1.038.945 1.522c1.505-.476 3.03-1.193 4.61-2.37c.377-4.004-.64-6.83-2.804-8.608ZM9.973 11.86c-.833 0-1.52-.76-1.52-1.694c0-.933.672-1.693 1.52-1.693c.846 0 1.533.76 1.52 1.693c.013.934-.674 1.694-1.52 1.694Zm4.073 0c-.833 0-1.52-.76-1.52-1.694c0-.933.672-1.693 1.52-1.693c.846 0 1.533.76 1.52 1.693c.013.934-.674 1.694-1.52 1.694Z"/></svg>
+          <span>Tushar</span>
+        </a>
+        <nav class="nav-links" id="primaryNav">
+          <a href="#discord-embed">About</a>
+          <a href="#bots">Bots</a>
+          <a href="#projects">Projects</a>
+          <a href="#experience">Experience</a>
+          <a href="#contact">Contact</a>
+        </nav>
+      </div>
+      <div class="nav-right">
+        <div class="presence-pill" id="presencePill" aria-live="polite">
+          <span class="dot online" aria-hidden="true"></span>
+          <span class="text">Online</span>
+        </div>
+        <button class="icon-btn" id="themeToggle" aria-label="Toggle theme" title="Toggle theme"></button>
+      </div>
+    </div>
+  </header>
   <!-- Header / Hero -->
   <!-- <header class="hero">
     <div class="hero_inner container">
@@ -29,8 +61,8 @@
     </div>
   </header> -->
 
-  <!-- Discord-style profile card -->
-  <section class="section" id="discord-embed">
+  <!-- Hero: Discord-style profile header -->
+  <section class="section hero hero-discord" id="discord-embed">
     <div class="container">
       <div class="discord-embed" aria-label="Discord profile preview">
         <div class="embed-top" style="background-image:url('https://cdn.discordapp.com/banners/518470816258588684/a_fb23d80a1a7a1a78108a4392529295e4.png?size=1024');">
@@ -123,11 +155,19 @@
       </div>
     </section>
 
+    <!-- Bots -->
+    <section class="section surface" id="bots">
+      <div class="container">
+        <h2 class="h2">Bots I’ve Built</h2>
+        <div class="message-list" id="botsList"></div>
+      </div>
+    </section>
+
     <!-- Projects -->
     <section class="section surface" id="projects">
       <div class="container">
         <h2 class="h2">Projects</h2>
-        <div class="grid project_grid" id="projectGrid"></div>
+        <div class="message-list" id="projectList"></div>
       </div>
     </section>
 
@@ -157,6 +197,26 @@
   <footer class="footer">
     <div class="container small muted">© <span id="year"></span> Tushar Goyal</div>
   </footer>
+
+  <!-- Side Theme Switcher -->
+  <!-- <div class="theme-switcher" role="group" aria-label="Theme switcher">
+    <button class="icon-btn" id="themeToggleSide" aria-label="Toggle theme" title="Toggle theme"></button>
+  </div> -->
+
+  <!-- Gallery Modal -->
+  <div class="gallery-modal" id="galleryModal" aria-hidden="true" role="dialog" aria-label="Bot gallery">
+    <div class="gallery-backdrop" data-close="gallery"></div>
+    <div class="gallery-content">
+      <button class="gallery-close icon-btn" aria-label="Close gallery" data-close="gallery">✕</button>
+      <div class="gallery-stage">
+        <button class="gallery-nav prev" id="galleryPrev" aria-label="Previous image">‹</button>
+        <img id="galleryImage" src="assets/placeholder.svg" alt="Bot screenshot"/>
+        <button class="gallery-nav next" id="galleryNext" aria-label="Next image">›</button>
+      </div>
+      <div class="gallery-caption" id="galleryCaption"></div>
+      <div class="gallery-dots" id="galleryDots"></div>
+    </div>
+  </div>
 
   <script src="script.js"></script>
 </body>
