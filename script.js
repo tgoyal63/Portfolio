@@ -17,9 +17,19 @@ const bots = [
     ],
     images: [
       {
-        src: "assets/projects/aui.png",
+        src: "assets/projects/screenshots/aui-bot/help.png",
         caption:
-          "Overview: ModMail, reminders, suggestions, and VC logs in action.",
+          "Help menu with full command categories: Mail, Suggestions, VCLogs, Modcommands, TempVC, AI and more.",
+      },
+      {
+        src: "assets/projects/screenshots/aui-bot/modmail.png",
+        caption:
+          "ModMail ticket channel showing user info card and quick actions (claim, user info, modlogs, close).",
+      },
+      {
+        src: "assets/projects/screenshots/aui-bot/modmail-transcript.png",
+        caption:
+          "ModMail transcript attachment and summary embed posted after closing a ticket.",
       },
     ],
   },
@@ -40,9 +50,19 @@ const bots = [
     ],
     images: [
       {
-        src: "assets/projects/foxy.png",
+        src: "assets/projects/screenshots/foxy-bot/help.png",
         caption:
-          "Private VC creation flow and economy commands (balance, leaderboard, store).",
+          "Help commands organized by category: economy, games, manager, PVC and other.",
+      },
+      {
+        src: "assets/projects/screenshots/foxy-bot/general-pvc-panel.png",
+        caption:
+          "PVC Panel with quick actions — info, add/remove users, auto mode, transfer ownership, hide/unhide, delete, public/private.",
+      },
+      {
+        src: "assets/projects/screenshots/foxy-bot/user-pvc-panel.png",
+        caption:
+          "PVC details view showing owner, members list, add/remove selectors and action buttons.",
       },
     ],
   },
