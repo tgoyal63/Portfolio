@@ -324,6 +324,10 @@ let imageToken = 0; // prevents race conditions when switching fast
 let zoomState = { scale: 1, x: 0, y: 0, dragging: false, startX: 0, startY: 0, lastTap: 0 };
 let panBounds = { maxX: 0, maxY: 0 };
 
+// In-memory image cache for preloading (resets on refresh)
+// Map<src, { img: HTMLImageElement, ready: boolean, promise: Promise<HTMLImageElement> }>
+const imageCache = new Map();
+
 function openGallery(botId) {
   const bot = bots.find((b) => b.id === botId);
   if (!bot) return;
@@ -554,9 +558,34 @@ function initGalleryControls() {
 
 // --- Gallery helpers ---
 function preloadImage(src) {
+  if (!src) return;
+  const cached = imageCache.get(src);
+  if (cached) return cached.promise;
   const im = new Image();
   im.decoding = "async";
+  const promise = new Promise((resolve, reject) => {
+    im.onload = () => {
+      // Ensure decoded bitmap when possible
+      if (im.decode) {
+        im.decode().catch(() => {}).finally(() => {
+          const item = imageCache.get(src);
+          if (item) item.ready = true;
+          resolve(im);
+        });
+      } else {
+        const item = imageCache.get(src);
+        if (item) item.ready = true;
+        resolve(im);
+      }
+    };
+    im.onerror = (e) => {
+      imageCache.delete(src);
+      reject(e);
+    };
+  });
+  imageCache.set(src, { img: im, ready: false, promise });
   im.src = src;
+  return promise;
 }
 
 function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
@@ -738,6 +767,25 @@ document.addEventListener("DOMContentLoaded", () => {
   initNavToggle();
   initYear();
   scrollReveal();
+  // Warm up gallery screenshots after initial render so popup opens instantly
+  const warmScreens = () => {
+    try {
+      bots.forEach((b) => {
+        (b.images || []).forEach((e) => {
+          const s = typeof e === "string" ? e : e && e.src;
+          if (s) preloadImage(s);
+        });
+      });
+    } catch (_) {
+      // no-op
+    }
+  };
+  if ("requestIdleCallback" in window) {
+    requestIdleCallback(warmScreens, { timeout: 1500 });
+  } else {
+    // let above-the-fold work finish first
+    setTimeout(warmScreens, 300);
+  }
   // Smooth scroll for nav links (with close on mobile)
   document.querySelectorAll('.nav-links a[href^="#"]').forEach((a) => {
     a.addEventListener("click", (e) => {
