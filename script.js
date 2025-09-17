@@ -320,6 +320,9 @@ function renderBots() {
 // Simple gallery modal
 let galleryState = { bot: null, index: 0 };
 let lastFocusedBeforeModal = null;
+let imageToken = 0; // prevents race conditions when switching fast
+let zoomState = { scale: 1, x: 0, y: 0, dragging: false, startX: 0, startY: 0, lastTap: 0 };
+let panBounds = { maxX: 0, maxY: 0 };
 
 function openGallery(botId) {
   const bot = bots.find((b) => b.id === botId);
@@ -337,6 +340,26 @@ function openGallery(botId) {
     d.addEventListener("click", () => setGalleryIndex(i));
     dots.appendChild(d);
   });
+  // Thumbnails
+  const thumbs = $("#galleryThumbs");
+  if (thumbs) {
+    thumbs.innerHTML = "";
+    bot.images.forEach((entry, i) => {
+      const src = typeof entry === "string" ? entry : entry.src;
+      const b = document.createElement("button");
+      b.className = "gallery-thumb";
+      if (i === 0) b.classList.add("active");
+      b.setAttribute("aria-label", `Open image ${i + 1}`);
+      const im = document.createElement("img");
+      im.src = src;
+      im.alt = `Thumbnail ${i + 1}`;
+      im.loading = "lazy";
+      b.appendChild(im);
+      b.addEventListener("click", () => setGalleryIndex(i));
+      thumbs.appendChild(b);
+    });
+  }
+  resetZoom();
   setGalleryIndex(0);
   lastFocusedBeforeModal = document.activeElement;
   modal.classList.add("open");
@@ -345,12 +368,17 @@ function openGallery(botId) {
   document.body.style.overflow = "hidden";
   const closeBtn = modal.querySelector(".gallery-close");
   if (closeBtn) closeBtn.focus();
+  attachSwipe($(".gallery-stage"));
+  // Prevent native drag ghost image
+  img.setAttribute("draggable", "false");
+  img.addEventListener("dragstart", (e) => e.preventDefault());
 }
 
 function setGalleryIndex(i) {
   const { bot } = galleryState;
   if (!bot) return;
   galleryState.index = (i + bot.images.length) % bot.images.length;
+  const stage = $(".gallery-stage");
   const img = $("#galleryImage");
   const caption = $("#galleryCaption");
   const entry = bot.images[galleryState.index];
@@ -359,17 +387,60 @@ function setGalleryIndex(i) {
     typeof entry === "string"
       ? ""
       : entry && (entry.caption || entry.alt || "");
-  img.onerror = imgFallback;
-  img.src = src || "assets/placeholder.svg";
-  img.alt = desc || `${bot.title} screenshot ${galleryState.index + 1}`;
+
+  // Loading indicator & race-guard
+  stage.classList.add("loading");
+  imageToken++;
+  const myToken = imageToken;
+  img.onerror = (ev) => {
+    imgFallback(ev);
+    stage.classList.remove("loading");
+  };
+  const doSet = async () => {
+    try {
+      img.src = src || "assets/placeholder.svg";
+      img.alt = desc || `${bot.title} screenshot ${galleryState.index + 1}`;
+      // Try decode for smooth swap
+      if (img.decode) await img.decode();
+    } catch (_) {
+      /* ignore */
+    } finally {
+      if (myToken === imageToken) {
+        stage.classList.remove("loading");
+        recalcPanBounds();
+        applyZoomTransform();
+      }
+    }
+  };
+  doSet();
+
   const indexText = `${bot.title} — ${galleryState.index + 1}/${
     bot.images.length
   }`;
   caption.textContent = desc ? `${indexText} · ${desc}` : indexText;
+
+  // Update dots
   const dots = Array.from($("#galleryDots").children);
-  dots.forEach((d, idx) =>
-    d.classList.toggle("active", idx === galleryState.index)
-  );
+  dots.forEach((d, idx) => d.classList.toggle("active", idx === galleryState.index));
+  // Update thumbs
+  const thumbs = $("#galleryThumbs");
+  if (thumbs) {
+    Array.from(thumbs.children).forEach((t, idx) =>
+      t.classList.toggle("active", idx === galleryState.index)
+    );
+  }
+
+  // Reset zoom when changing images
+  resetZoom();
+
+  // Preload neighbors
+  const nextIdx = (galleryState.index + 1) % bot.images.length;
+  const prevIdx = (galleryState.index - 1 + bot.images.length) % bot.images.length;
+  [prevIdx, nextIdx].forEach((idx) => {
+    const e = bot.images[idx];
+    const s = typeof e === "string" ? e : e && e.src;
+    if (s) preloadImage(s);
+  });
 }
 
 function closeGallery() {
@@ -389,17 +460,18 @@ function initGalleryControls() {
     if (e.target.closest('[data-close="gallery"], .gallery-backdrop'))
       closeGallery();
   });
-  $("#galleryPrev").addEventListener("click", () =>
-    setGalleryIndex(galleryState.index - 1)
-  );
-  $("#galleryNext").addEventListener("click", () =>
-    setGalleryIndex(galleryState.index + 1)
-  );
+  $("#galleryPrev").addEventListener("click", () => setGalleryIndex(galleryState.index - 1));
+  $("#galleryNext").addEventListener("click", () => setGalleryIndex(galleryState.index + 1));
   window.addEventListener("keydown", (e) => {
     if (modal.classList.contains("open")) {
       if (e.key === "Escape") closeGallery();
       if (e.key === "ArrowLeft") setGalleryIndex(galleryState.index - 1);
       if (e.key === "ArrowRight") setGalleryIndex(galleryState.index + 1);
+      if (e.key === "Home") setGalleryIndex(0);
+      if (e.key === "End") {
+        const { bot } = galleryState;
+        if (bot) setGalleryIndex(bot.images.length - 1);
+      }
     }
   });
 
@@ -427,6 +499,130 @@ function initGalleryControls() {
       }
     }
   });
+
+  // Zoom in/out on double click / double tap and wheel
+  const stage = document.querySelector(".gallery-stage");
+  const img = document.getElementById("galleryImage");
+  stage.addEventListener("dblclick", (e) => {
+    toggleZoom();
+  });
+  stage.addEventListener("click", (e) => {
+    // simple double-tap detector for touch
+    const now = Date.now();
+    if (now - zoomState.lastTap < 300) toggleZoom();
+    zoomState.lastTap = now;
+  }, { passive: true });
+  stage.addEventListener("wheel", (e) => {
+    if (!document.getElementById("galleryModal").classList.contains("open")) return;
+    e.preventDefault();
+    const delta = Math.sign(e.deltaY);
+    const next = clamp(zoomState.scale - delta * 0.2, 1, 3);
+    setZoom(next);
+  }, { passive: false });
+
+  // Pan when zoomed
+  const wrap = document.querySelector(".gallery-image-wrap");
+  const startPan = (clientX, clientY) => {
+    if (zoomState.scale <= 1) return;
+    zoomState.dragging = true;
+    zoomState.startX = clientX - zoomState.x;
+    zoomState.startY = clientY - zoomState.y;
+    wrap.classList.add("dragging");
+  };
+  const movePan = (clientX, clientY) => {
+    if (!zoomState.dragging) return;
+    zoomState.x = clientX - zoomState.startX;
+    zoomState.y = clientY - zoomState.startY;
+    applyZoomTransform();
+  };
+  const endPan = () => {
+    zoomState.dragging = false;
+    wrap.classList.remove("dragging");
+  };
+  wrap.addEventListener("pointerdown", (e) => {
+    if (zoomState.scale > 1) {
+      startPan(e.clientX, e.clientY);
+      try { wrap.setPointerCapture(e.pointerId); } catch (_) {}
+    }
+  });
+  wrap.addEventListener("pointermove", (e) => movePan(e.clientX, e.clientY));
+  wrap.addEventListener("pointerup", endPan);
+  wrap.addEventListener("pointercancel", endPan);
+  wrap.addEventListener("pointerleave", endPan);
+  window.addEventListener("resize", () => { recalcPanBounds(); applyZoomTransform(); });
+}
+
+// --- Gallery helpers ---
+function preloadImage(src) {
+  const im = new Image();
+  im.decoding = "async";
+  im.src = src;
+}
+
+function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
+
+function resetZoom() {
+  zoomState.scale = 1; zoomState.x = 0; zoomState.y = 0; zoomState.dragging = false;
+  const stage = document.querySelector(".gallery-stage");
+  stage.classList.remove("zoomed");
+  recalcPanBounds();
+  applyZoomTransform();
+}
+
+function setZoom(scale) {
+  zoomState.scale = clamp(scale, 1, 3);
+  const stage = document.querySelector(".gallery-stage");
+  stage.classList.toggle("zoomed", zoomState.scale > 1);
+  recalcPanBounds();
+  applyZoomTransform();
+}
+
+function toggleZoom() {
+  setZoom(zoomState.scale > 1 ? 1 : 2);
+}
+
+function applyZoomTransform() {
+  const img = document.getElementById("galleryImage");
+  // Clamp translation inside bounds so the image cannot move outside
+  zoomState.x = clamp(zoomState.x, -panBounds.maxX, panBounds.maxX);
+  zoomState.y = clamp(zoomState.y, -panBounds.maxY, panBounds.maxY);
+  img.style.transform = `translate(${zoomState.x}px, ${zoomState.y}px) scale(${zoomState.scale})`;
+}
+
+function attachSwipe(stage) {
+  if (!stage) return;
+  let startX = 0, startY = 0, down = false;
+  stage.addEventListener("pointerdown", (e) => { down = true; startX = e.clientX; startY = e.clientY; });
+  stage.addEventListener("pointerup", (e) => {
+    if (!down) return; down = false;
+    if (zoomState.scale > 1) return; // don't swipe when zoomed
+    const dx = e.clientX - startX; const dy = e.clientY - startY;
+    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
+      if (dx < 0) setGalleryIndex(galleryState.index + 1);
+      else setGalleryIndex(galleryState.index - 1);
+    }
+  });
+}
+
+// Compute pan bounds based on container and intrinsic image size
+function recalcPanBounds() {
+  const wrap = document.querySelector(".gallery-image-wrap");
+  const img = document.getElementById("galleryImage");
+  if (!wrap || !img) return;
+  const w = wrap.clientWidth;
+  const h = wrap.clientHeight;
+  const nW = img.naturalWidth || 0;
+  const nH = img.naturalHeight || 0;
+  if (!w || !h || !nW || !nH) { panBounds = { maxX: 0, maxY: 0 }; return; }
+  const r = Math.min(w / nW, h / nH);
+  const baseW = nW * r;
+  const baseH = nH * r;
+  const z = zoomState.scale;
+  panBounds.maxX = Math.max(0, (baseW * z - w) / 2);
+  panBounds.maxY = Math.max(0, (baseH * z - h) / 2);
+  // Clamp current position to new bounds
+  zoomState.x = clamp(zoomState.x, -panBounds.maxX, panBounds.maxX);
+  zoomState.y = clamp(zoomState.y, -panBounds.maxY, panBounds.maxY);
 }
 
 // Presence pill (simulated rotating status)

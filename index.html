@@ -191,11 +191,14 @@
       <button class="gallery-close icon-btn" aria-label="Close gallery" data-close="gallery">✕</button>
       <div class="gallery-stage">
         <button class="gallery-nav prev" id="galleryPrev" aria-label="Previous image">‹</button>
-        <img id="galleryImage" src="assets/placeholder.svg" alt="Bot screenshot"/>
+        <div class="gallery-image-wrap">
+          <img id="galleryImage" src="assets/placeholder.svg" alt="Bot screenshot" draggable="false"/>
+        </div>
         <button class="gallery-nav next" id="galleryNext" aria-label="Next image">›</button>
       </div>
       <div class="gallery-caption" id="galleryCaption"></div>
       <div class="gallery-dots" id="galleryDots"></div>
+      <div class="gallery-thumbs" id="galleryThumbs" aria-label="Thumbnails"></div>
     </div>
   </div>
 
