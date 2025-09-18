@@ -8,7 +8,8 @@ const bots = [
     invite:
       "https://discord.com/oauth2/authorize?client_id=1068531863469174876&scope=bot+applications.commands&permissions=8",
     liveBadge: "Live on Among Us India",
-    tagline: "Discord bot for Among Us India (44k+): moderation, utility and AI-powered tools.",
+    tagline:
+      "Discord bot for Among Us India (44k+): moderation, utility and AI-powered tools.",
     features: [
       "Moderation suite: bans/unbans, warns/notes, ModMail",
       "Voice controls & logs: move users/channels, quick VC lookup, 30-day VC logs",
@@ -41,7 +42,8 @@ const bots = [
     invite:
       "https://discord.com/oauth2/authorize?client_id=1329511720284196915&scope=bot+applications.commands&permissions=8",
     liveBadge: "Live on Among Us India",
-    tagline: "Private VC and economy bot for paid voice channels and in-server coins.",
+    tagline:
+      "Private VC and economy bot for paid voice channels and in-server coins.",
     features: [
       "Private VCs with coin-based billing: pay-as-you-go or one-time",
       "Access control: add/remove users, friends allowlist, role management, ownership transfer",
@@ -321,7 +323,15 @@ function renderBots() {
 let galleryState = { bot: null, index: 0 };
 let lastFocusedBeforeModal = null;
 let imageToken = 0; // prevents race conditions when switching fast
-let zoomState = { scale: 1, x: 0, y: 0, dragging: false, startX: 0, startY: 0, lastTap: 0 };
+let zoomState = {
+  scale: 1,
+  x: 0,
+  y: 0,
+  dragging: false,
+  startX: 0,
+  startY: 0,
+  lastTap: 0,
+};
 let panBounds = { maxX: 0, maxY: 0 };
 
 // In-memory image cache for preloading (resets on refresh)
@@ -425,7 +435,9 @@ function setGalleryIndex(i) {
 
   // Update dots
   const dots = Array.from($("#galleryDots").children);
-  dots.forEach((d, idx) => d.classList.toggle("active", idx === galleryState.index));
+  dots.forEach((d, idx) =>
+    d.classList.toggle("active", idx === galleryState.index)
+  );
   // Update thumbs
   const thumbs = $("#galleryThumbs");
   if (thumbs) {
@@ -439,7 +451,8 @@ function setGalleryIndex(i) {
 
   // Preload neighbors
   const nextIdx = (galleryState.index + 1) % bot.images.length;
-  const prevIdx = (galleryState.index - 1 + bot.images.length) % bot.images.length;
+  const prevIdx =
+    (galleryState.index - 1 + bot.images.length) % bot.images.length;
   [prevIdx, nextIdx].forEach((idx) => {
     const e = bot.images[idx];
     const s = typeof e === "string" ? e : e && e.src;
@@ -464,8 +477,12 @@ function initGalleryControls() {
     if (e.target.closest('[data-close="gallery"], .gallery-backdrop'))
       closeGallery();
   });
-  $("#galleryPrev").addEventListener("click", () => setGalleryIndex(galleryState.index - 1));
-  $("#galleryNext").addEventListener("click", () => setGalleryIndex(galleryState.index + 1));
+  $("#galleryPrev").addEventListener("click", () =>
+    setGalleryIndex(galleryState.index - 1)
+  );
+  $("#galleryNext").addEventListener("click", () =>
+    setGalleryIndex(galleryState.index + 1)
+  );
   window.addEventListener("keydown", (e) => {
     if (modal.classList.contains("open")) {
       if (e.key === "Escape") closeGallery();
@@ -504,56 +521,56 @@ function initGalleryControls() {
     }
   });
 
-  // Zoom in/out on double click / double tap and wheel
+  // Zoom indicator (follows cursor)
   const stage = document.querySelector(".gallery-stage");
   const img = document.getElementById("galleryImage");
-  stage.addEventListener("dblclick", (e) => {
-    toggleZoom();
-  });
-  stage.addEventListener("click", (e) => {
-    // simple double-tap detector for touch
-    const now = Date.now();
-    if (now - zoomState.lastTap < 300) toggleZoom();
-    zoomState.lastTap = now;
-  }, { passive: true });
-  stage.addEventListener("wheel", (e) => {
-    if (!document.getElementById("galleryModal").classList.contains("open")) return;
-    e.preventDefault();
-    const delta = Math.sign(e.deltaY);
-    const next = clamp(zoomState.scale - delta * 0.2, 1, 3);
-    setZoom(next);
-  }, { passive: false });
-
-  // Pan when zoomed
   const wrap = document.querySelector(".gallery-image-wrap");
-  const startPan = (clientX, clientY) => {
-    if (zoomState.scale <= 1) return;
-    zoomState.dragging = true;
-    zoomState.startX = clientX - zoomState.x;
-    zoomState.startY = clientY - zoomState.y;
-    wrap.classList.add("dragging");
+  const indicator = document.createElement("div");
+  indicator.className = "gallery-zoom-indicator";
+  indicator.setAttribute("aria-hidden", "true");
+  wrap.appendChild(indicator);
+  const moveIndicator = (clientX, clientY) => {
+    const rect = wrap.getBoundingClientRect();
+    indicator.style.left = `${clientX - rect.left}px`;
+    indicator.style.top = `${clientY - rect.top}px`;
   };
-  const movePan = (clientX, clientY) => {
-    if (!zoomState.dragging) return;
-    zoomState.x = clientX - zoomState.startX;
-    zoomState.y = clientY - zoomState.startY;
+  wrap.addEventListener("pointermove", (e) =>
+    moveIndicator(e.clientX, e.clientY)
+  );
+  wrap.addEventListener("pointerenter", (e) =>
+    moveIndicator(e.clientX, e.clientY)
+  );
+
+  // Single click on wrapper: toggle zoom at cursor
+  wrap.addEventListener(
+    "click",
+    (e) => {
+      toggleZoomAt(e.clientX, e.clientY);
+    },
+    { passive: true }
+  );
+
+  // Wheel pans when zoomed (no wheel zoom)
+  stage.addEventListener(
+    "wheel",
+    (e) => {
+      if (!document.getElementById("galleryModal").classList.contains("open"))
+        return;
+      if (zoomState.scale <= 1) return; // allow default behavior (if any)
+      e.preventDefault();
+      const dx = e.deltaX || 0;
+      const dy = e.deltaY || 0;
+      zoomState.x -= dx;
+      zoomState.y -= dy;
+      applyZoomTransform();
+    },
+    { passive: false }
+  );
+
+  window.addEventListener("resize", () => {
+    recalcPanBounds();
     applyZoomTransform();
-  };
-  const endPan = () => {
-    zoomState.dragging = false;
-    wrap.classList.remove("dragging");
-  };
-  wrap.addEventListener("pointerdown", (e) => {
-    if (zoomState.scale > 1) {
-      startPan(e.clientX, e.clientY);
-      try { wrap.setPointerCapture(e.pointerId); } catch (_) {}
-    }
   });
-  wrap.addEventListener("pointermove", (e) => movePan(e.clientX, e.clientY));
-  wrap.addEventListener("pointerup", endPan);
-  wrap.addEventListener("pointercancel", endPan);
-  wrap.addEventListener("pointerleave", endPan);
-  window.addEventListener("resize", () => { recalcPanBounds(); applyZoomTransform(); });
 }
 
 // --- Gallery helpers ---
@@ -567,11 +584,13 @@ function preloadImage(src) {
     im.onload = () => {
       // Ensure decoded bitmap when possible
       if (im.decode) {
-        im.decode().catch(() => {}).finally(() => {
-          const item = imageCache.get(src);
-          if (item) item.ready = true;
-          resolve(im);
-        });
+        im.decode()
+          .catch(() => {})
+          .finally(() => {
+            const item = imageCache.get(src);
+            if (item) item.ready = true;
+            resolve(im);
+          });
       } else {
         const item = imageCache.get(src);
         if (item) item.ready = true;
@@ -588,10 +607,15 @@ function preloadImage(src) {
   return promise;
 }
 
-function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
+function clamp(v, min, max) {
+  return Math.max(min, Math.min(max, v));
+}
 
 function resetZoom() {
-  zoomState.scale = 1; zoomState.x = 0; zoomState.y = 0; zoomState.dragging = false;
+  zoomState.scale = 1;
+  zoomState.x = 0;
+  zoomState.y = 0;
+  zoomState.dragging = false;
   const stage = document.querySelector(".gallery-stage");
   stage.classList.remove("zoomed");
   recalcPanBounds();
@@ -610,6 +634,36 @@ function toggleZoom() {
   setZoom(zoomState.scale > 1 ? 1 : 2);
 }
 
+// Set zoom but keep the cursor point anchored
+function setZoomAt(scale, clientX, clientY) {
+  const wrap = document.querySelector(".gallery-image-wrap");
+  if (!wrap) {
+    setZoom(scale);
+    return;
+  }
+  const rect = wrap.getBoundingClientRect();
+  const prev = zoomState.scale || 1;
+  const next = clamp(scale, 1, 3);
+  const centerX = rect.left + rect.width / 2;
+  const centerY = rect.top + rect.height / 2;
+  // Vector from image center to pointer in screen coords
+  const dx = clientX - (centerX + zoomState.x);
+  const dy = clientY - (centerY + zoomState.y);
+  const k = 1 - next / prev; // factor to keep pointer anchored
+  zoomState.x += dx * k;
+  zoomState.y += dy * k;
+  const stage = document.querySelector(".gallery-stage");
+  zoomState.scale = next;
+  stage.classList.toggle("zoomed", zoomState.scale > 1);
+  recalcPanBounds();
+  applyZoomTransform();
+}
+
+function toggleZoomAt(clientX, clientY) {
+  const target = zoomState.scale > 1 ? 1 : 2;
+  setZoomAt(target, clientX, clientY);
+}
+
 function applyZoomTransform() {
   const img = document.getElementById("galleryImage");
   // Clamp translation inside bounds so the image cannot move outside
@@ -620,12 +674,20 @@ function applyZoomTransform() {
 
 function attachSwipe(stage) {
   if (!stage) return;
-  let startX = 0, startY = 0, down = false;
-  stage.addEventListener("pointerdown", (e) => { down = true; startX = e.clientX; startY = e.clientY; });
+  let startX = 0,
+    startY = 0,
+    down = false;
+  stage.addEventListener("pointerdown", (e) => {
+    down = true;
+    startX = e.clientX;
+    startY = e.clientY;
+  });
   stage.addEventListener("pointerup", (e) => {
-    if (!down) return; down = false;
+    if (!down) return;
+    down = false;
     if (zoomState.scale > 1) return; // don't swipe when zoomed
-    const dx = e.clientX - startX; const dy = e.clientY - startY;
+    const dx = e.clientX - startX;
+    const dy = e.clientY - startY;
     if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
       if (dx < 0) setGalleryIndex(galleryState.index + 1);
       else setGalleryIndex(galleryState.index - 1);
@@ -642,7 +704,10 @@ function recalcPanBounds() {
   const h = wrap.clientHeight;
   const nW = img.naturalWidth || 0;
   const nH = img.naturalHeight || 0;
-  if (!w || !h || !nW || !nH) { panBounds = { maxX: 0, maxY: 0 }; return; }
+  if (!w || !h || !nW || !nH) {
+    panBounds = { maxX: 0, maxY: 0 };
+    return;
+  }
   const r = Math.min(w / nW, h / nH);
   const baseW = nW * r;
   const baseH = nH * r;
