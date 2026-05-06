@@ -1,0 +1,1252 @@
+:root {
+  color-scheme: dark;
+  --bg: #08090b;
+  --bg-soft: #0b0d10;
+  --surface: #101318;
+  --surface-raised: #151920;
+  --surface-muted: #1a1f26;
+  --line: #242a31;
+  --line-strong: #343c45;
+  --text: #eef3ef;
+  --muted: #9aa6a1;
+  --muted-strong: #c5cec9;
+  --accent: #62d6a3;
+  --accent-dim: rgba(98, 214, 163, 0.14);
+  --cyan: #78c7ff;
+  --cyan-dim: rgba(120, 199, 255, 0.12);
+  --amber: #e2bd75;
+  --amber-dim: rgba(226, 189, 117, 0.14);
+  --danger: #ff7b72;
+  --shadow: 0 18px 60px rgba(0, 0, 0, 0.28);
+  --radius: 8px;
+}
+
+* {
+  box-sizing: border-box;
+  letter-spacing: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 86px;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(180deg, #08090b 0%, #0b0d10 48%, #090a0c 100%);
+  background-size: 48px 48px, 48px 48px, auto;
+  color: var(--text);
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+body::selection {
+  background: rgba(98, 214, 163, 0.32);
+  color: var(--text);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skipLink {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 100;
+  transform: translateY(-140%);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  background: var(--surface-raised);
+  color: var(--text);
+  padding: 10px 14px;
+}
+
+.skipLink:focus {
+  transform: translateY(0);
+}
+
+.container {
+  width: min(1180px, calc(100% - 40px));
+  margin-inline: auto;
+}
+
+.siteHeader {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(8, 9, 11, 0.82);
+  backdrop-filter: blur(18px);
+}
+
+.headerInner {
+  width: min(1240px, calc(100% - 32px));
+  min-height: 68px;
+  margin-inline: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--text);
+  font-weight: 700;
+}
+
+.brandMark {
+  width: 34px;
+  height: 34px;
+  display: inline-grid;
+  place-items: center;
+  border: 1px solid rgba(98, 214, 163, 0.5);
+  border-radius: var(--radius);
+  background: linear-gradient(145deg, rgba(98, 214, 163, 0.18), rgba(120, 199, 255, 0.08));
+  color: var(--accent);
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 0.86rem;
+}
+
+.brand small {
+  display: block;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.siteHeader nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.siteHeader nav a,
+.navCommand {
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  color: var(--muted-strong);
+  padding: 8px 10px;
+  font-size: 0.9rem;
+  background: transparent;
+  cursor: pointer;
+}
+
+.siteHeader nav a:hover,
+.siteHeader nav a:focus-visible,
+.navCommand:hover,
+.navCommand:focus-visible {
+  border-color: var(--line-strong);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text);
+  outline: none;
+}
+
+.section {
+  padding: 90px 0;
+}
+
+.compactSection {
+  padding: 28px 0 74px;
+}
+
+.surface {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.025), rgba(255, 255, 255, 0.012));
+  border-block: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.eyebrow {
+  margin: 0 0 12px;
+  color: var(--accent);
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.sectionHeader {
+  max-width: 760px;
+  margin-bottom: 34px;
+}
+
+.sectionHeader h2,
+.contactGrid h2 {
+  margin: 0;
+  color: var(--text);
+  font-size: 2.4rem;
+  line-height: 1.1;
+}
+
+.sectionHeader p:not(.eyebrow),
+.contactGrid p {
+  margin: 14px 0 0;
+  color: var(--muted);
+  font-size: 1.02rem;
+}
+
+.button {
+  min-height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text);
+  padding: 9px 14px;
+  font-weight: 700;
+  line-height: 1.1;
+  transition:
+    transform 160ms ease,
+    border-color 160ms ease,
+    background 160ms ease;
+}
+
+.button:hover,
+.button:focus-visible {
+  transform: translateY(-1px);
+  border-color: rgba(98, 214, 163, 0.62);
+  outline: none;
+}
+
+.button.primary {
+  border-color: rgba(98, 214, 163, 0.58);
+  background: linear-gradient(180deg, rgba(98, 214, 163, 0.22), rgba(98, 214, 163, 0.12));
+  color: #effff8;
+}
+
+.button.subtle {
+  color: var(--muted-strong);
+}
+
+.hero {
+  padding: 96px 0 40px;
+}
+
+.heroGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 460px;
+  gap: 54px;
+  align-items: center;
+  min-height: 650px;
+}
+
+.heroCopy h1 {
+  max-width: 820px;
+  margin: 0;
+  color: var(--text);
+  font-size: 4rem;
+  line-height: 1.03;
+}
+
+.heroLead {
+  max-width: 680px;
+  margin: 22px 0 0;
+  color: var(--muted-strong);
+  font-size: 1.18rem;
+}
+
+.heroActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 28px;
+}
+
+.heroMetrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin: 34px 0 0;
+}
+
+.heroMetrics div {
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: rgba(16, 19, 24, 0.72);
+  padding: 14px;
+}
+
+.heroMetrics dt {
+  color: var(--text);
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.heroMetrics dd {
+  margin: 6px 0 0;
+  color: var(--muted-strong);
+  font-size: 0.86rem;
+  line-height: 1.3;
+}
+
+.heroMetrics small {
+  display: block;
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 0.74rem;
+  line-height: 1.35;
+}
+
+.systemPanel {
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  background:
+    linear-gradient(180deg, rgba(98, 214, 163, 0.08), transparent 32%),
+    rgba(16, 19, 24, 0.9);
+  box-shadow: var(--shadow);
+  padding: 18px;
+}
+
+.panelHeader,
+.panelFooter {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--muted-strong);
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 0.78rem;
+}
+
+.statusDot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 5px rgba(98, 214, 163, 0.1);
+  animation: statusPulse 2.8s ease-in-out infinite;
+}
+
+.terminal {
+  display: grid;
+  gap: 8px;
+  margin-top: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: var(--radius);
+  background: #090b0d;
+  padding: 14px;
+  overflow: hidden;
+}
+
+.terminal code {
+  color: #b8c5bf;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 0.72rem;
+  white-space: nowrap;
+}
+
+.terminal code::before {
+  content: "$ ";
+  color: var(--accent);
+}
+
+.panelFooter {
+  justify-content: space-between;
+  margin-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 14px;
+}
+
+.panelFooter strong {
+  color: var(--accent);
+  font-weight: 800;
+}
+
+.diagramFlow {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(128px, 1fr));
+  gap: 14px;
+  margin: 18px 0 0;
+  padding: 0;
+}
+
+.diagramFlowCompact {
+  grid-template-columns: repeat(auto-fit, minmax(94px, 1fr));
+  gap: 10px;
+}
+
+.diagramNode {
+  position: relative;
+  min-height: 92px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.035);
+  padding: 12px;
+}
+
+.diagramNode:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: -15px;
+  width: 14px;
+  border-top: 1px solid var(--line-strong);
+}
+
+.diagramNode strong {
+  color: var(--text);
+  font-size: 0.82rem;
+  line-height: 1.2;
+}
+
+.diagramNode span {
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 0.72rem;
+  line-height: 1.35;
+}
+
+.diagramNode.client {
+  border-color: rgba(120, 199, 255, 0.34);
+  background: var(--cyan-dim);
+}
+
+.diagramNode.api {
+  border-color: rgba(98, 214, 163, 0.32);
+  background: var(--accent-dim);
+}
+
+.diagramNode.queue {
+  border-color: rgba(226, 189, 117, 0.32);
+  background: var(--amber-dim);
+}
+
+.diagramNode.worker {
+  border-color: rgba(255, 255, 255, 0.14);
+}
+
+.diagramNode.data {
+  border-color: rgba(164, 176, 255, 0.28);
+  background: rgba(164, 176, 255, 0.08);
+}
+
+.diagramNode.external {
+  border-color: rgba(255, 123, 114, 0.28);
+  background: rgba(255, 123, 114, 0.08);
+}
+
+.signalBar {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.signalBar span {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: rgba(16, 19, 24, 0.72);
+  color: var(--muted-strong);
+  padding: 13px 14px;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.systemsGrid,
+.expertiseGrid,
+.philosophyGrid,
+.architectureGrid,
+.credentialsGrid {
+  display: grid;
+  gap: 14px;
+}
+
+.systemsGrid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.systemCard,
+.expertiseCard,
+.architectureCard,
+.credentialCard {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: rgba(16, 19, 24, 0.76);
+  padding: 18px;
+}
+
+.systemCard {
+  min-height: 250px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.systemCard p:first-child {
+  margin: 0 0 8px;
+  color: var(--accent);
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 0.74rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.systemCard h3,
+.architectureCard h3,
+.expertiseCard h3,
+.credentialCard h3,
+.philosophyItem h3,
+.timelineItem h3,
+.projectCard h3 {
+  margin: 0;
+  color: var(--text);
+  line-height: 1.2;
+}
+
+.systemCard > p:not(:first-child),
+.architectureCard > p,
+.credentialCard > p,
+.philosophyItem p,
+.expertiseCard span,
+.timelineItem p,
+.projectCard p,
+.projectCard li {
+  color: var(--muted);
+}
+
+.systemCard footer {
+  display: grid;
+  gap: 8px;
+  margin-top: 22px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 14px;
+}
+
+.systemCard footer span {
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.systemCard footer strong {
+  color: var(--muted-strong);
+  font-size: 0.9rem;
+}
+
+.projectStack {
+  display: grid;
+  gap: 18px;
+}
+
+.projectCard {
+  position: relative;
+  display: grid;
+  grid-template-columns: 58px minmax(0, 1fr) 330px;
+  gap: 22px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: rgba(16, 19, 24, 0.86);
+  padding: 22px;
+}
+
+.projectIndex {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(98, 214, 163, 0.34);
+  border-radius: var(--radius);
+  background: rgba(98, 214, 163, 0.08);
+  color: var(--accent);
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-weight: 800;
+}
+
+.projectMain h3 {
+  font-size: 1.6rem;
+}
+
+.roleLine {
+  margin: 10px 0 22px;
+  color: var(--muted-strong);
+}
+
+.projectGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px 22px;
+}
+
+.projectGrid h4,
+.decisionBlock h4 {
+  margin: 0 0 8px;
+  color: var(--muted-strong);
+  font-size: 0.84rem;
+  text-transform: uppercase;
+}
+
+.projectGrid p,
+.plainList,
+.decisionBlock ul {
+  margin: 0;
+}
+
+.plainList,
+.decisionBlock ul,
+.timelineItem ul {
+  padding-left: 18px;
+}
+
+.decisionBlock {
+  margin-top: 22px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 18px;
+}
+
+.decisionBlock li + li,
+.timelineItem li + li {
+  margin-top: 7px;
+}
+
+.metricRow,
+.techStack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+.metricRow span,
+.techStack span,
+.resumeProject span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  border: 1px solid rgba(98, 214, 163, 0.28);
+  border-radius: var(--radius);
+  background: rgba(98, 214, 163, 0.08);
+  color: var(--muted-strong);
+  padding: 4px 8px;
+  font-size: 0.78rem;
+  line-height: 1.2;
+}
+
+.techStack span {
+  border-color: var(--line);
+  background: rgba(255, 255, 255, 0.035);
+  color: var(--muted);
+}
+
+.projectDiagram {
+  min-width: 0;
+}
+
+.projectImage {
+  margin-bottom: 16px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface-muted);
+}
+
+.projectImage img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 7 / 4;
+  object-fit: cover;
+}
+
+.architectureGrid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.architectureCard {
+  min-height: 330px;
+}
+
+.philosophyGrid {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.philosophyItem {
+  border-left: 1px solid var(--line-strong);
+  padding: 4px 0 4px 18px;
+}
+
+.expertiseGrid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.expertiseCard div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.expertiseCard span {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.035);
+  padding: 5px 8px;
+  font-size: 0.84rem;
+}
+
+.timeline {
+  border-left: 1px solid var(--line-strong);
+}
+
+.timelineItem {
+  display: grid;
+  grid-template-columns: 190px minmax(0, 1fr);
+  gap: 26px;
+  padding: 0 0 30px 26px;
+  position: relative;
+}
+
+.timelineItem::before {
+  content: "";
+  position: absolute;
+  left: -5px;
+  top: 6px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.timelineItem:last-child {
+  padding-bottom: 0;
+}
+
+.timelineDate {
+  color: var(--accent);
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 0.8rem;
+}
+
+.timelineItem h3 span {
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.stackLine {
+  margin-top: 4px;
+  color: var(--accent) !important;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 0.78rem;
+}
+
+.credentialsGrid {
+  grid-template-columns: 1.35fr repeat(2, minmax(0, 1fr));
+}
+
+.credentialCard {
+  min-height: 210px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.credentialCard footer {
+  display: grid;
+  gap: 6px;
+  margin-top: 18px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 14px;
+  color: var(--muted);
+}
+
+.credentialCard footer strong {
+  color: var(--muted-strong);
+}
+
+.contactSection {
+  padding: 96px 0;
+}
+
+.contactGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 40px;
+  align-items: center;
+  border: 1px solid rgba(98, 214, 163, 0.22);
+  border-radius: var(--radius);
+  background:
+    linear-gradient(135deg, rgba(98, 214, 163, 0.13), rgba(120, 199, 255, 0.06)),
+    rgba(16, 19, 24, 0.86);
+  padding: 34px;
+}
+
+.contactActions {
+  display: grid;
+  gap: 10px;
+}
+
+.siteFooter {
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  padding: 28px 0 40px;
+  color: var(--muted);
+}
+
+.siteFooter .container {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.commandOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: start center;
+  padding-top: 110px;
+  background: rgba(0, 0, 0, 0.58);
+}
+
+.commandDialog {
+  width: min(620px, calc(100% - 32px));
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: #0d1014;
+  box-shadow: var(--shadow);
+  padding: 10px;
+}
+
+.commandInput {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: #08090b;
+  color: var(--text);
+  padding: 13px 14px;
+  outline: none;
+}
+
+.commandInput:focus {
+  border-color: rgba(98, 214, 163, 0.56);
+}
+
+.commandList {
+  display: grid;
+  gap: 6px;
+  margin-top: 10px;
+  max-height: 360px;
+  overflow-y: auto;
+}
+
+.commandItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  padding: 10px 12px;
+  color: var(--text);
+}
+
+.commandItem:hover,
+.commandItem:focus-visible {
+  border-color: var(--line-strong);
+  background: rgba(255, 255, 255, 0.04);
+  outline: none;
+}
+
+.commandItem small,
+.commandEmpty {
+  color: var(--muted);
+}
+
+.commandEmpty {
+  margin: 10px 12px 14px;
+}
+
+.resumePage {
+  padding: 44px 0;
+  background: #0b0d10;
+}
+
+.resumeSheet {
+  width: min(980px, calc(100% - 32px));
+  margin-inline: auto;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: #f8faf8;
+  color: #151817;
+  padding: 44px;
+}
+
+.resumeSheet a {
+  color: #0b6f49;
+}
+
+.resumeBack {
+  display: inline-flex;
+  margin-bottom: 18px;
+  font-size: 0.9rem;
+}
+
+.resumeHeader {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 260px;
+  gap: 30px;
+  border-bottom: 2px solid #1f2b26;
+  padding-bottom: 24px;
+}
+
+.resumeHeader h1 {
+  margin: 0;
+  font-size: 2.4rem;
+  line-height: 1.1;
+}
+
+.resumeHeader p {
+  margin: 10px 0 0;
+  color: #44504b;
+}
+
+.resumeHeader address {
+  display: grid;
+  gap: 6px;
+  font-style: normal;
+  font-size: 0.95rem;
+}
+
+.resumeSection {
+  margin-top: 26px;
+}
+
+.resumeSection h2 {
+  margin: 0 0 10px;
+  color: #111614;
+  font-size: 1rem;
+  text-transform: uppercase;
+}
+
+.resumeSection p,
+.resumeSection li {
+  color: #36413d;
+}
+
+.resumeGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.resumeGrid article,
+.resumeProject {
+  border: 1px solid #d8dfda;
+  border-radius: var(--radius);
+  padding: 14px;
+}
+
+.resumeGrid h3,
+.resumeJob h3,
+.resumeProject h3 {
+  margin: 0 0 6px;
+  color: #111614;
+}
+
+.resumeGrid strong {
+  color: #0d6d49;
+}
+
+.resumeJob {
+  margin-top: 16px;
+}
+
+.resumeJob header {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.resumeJob span {
+  color: #5b6761;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.resumeStack {
+  margin: 6px 0 0;
+  color: #0d6d49 !important;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.resumeJob ul {
+  margin: 8px 0 0;
+  padding-left: 20px;
+}
+
+.resumeProject + .resumeProject {
+  margin-top: 12px;
+}
+
+.resumeProject div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.resumeProject ul {
+  margin: 8px 0 0;
+  padding-left: 20px;
+}
+
+.resumeProject span {
+  background: #eef7f1;
+  color: #0d5f41;
+}
+
+.resumeSkills p {
+  margin: 8px 0;
+}
+
+@keyframes statusPulse {
+  0%,
+  100% {
+    opacity: 0.72;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@media (max-width: 1100px) {
+  .heroGrid {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+
+  .systemPanel {
+    max-width: 760px;
+  }
+
+  .heroMetrics,
+  .signalBar,
+  .systemsGrid,
+  .architectureGrid,
+  .expertiseGrid,
+  .credentialsGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .projectCard {
+    grid-template-columns: 48px minmax(0, 1fr);
+  }
+
+  .projectDiagram {
+    grid-column: 2;
+  }
+
+  .philosophyGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 780px) {
+  .container,
+  .headerInner {
+    width: min(100% - 28px, 1180px);
+  }
+
+  .siteHeader nav {
+    display: none;
+  }
+
+  .section {
+    padding: 68px 0;
+  }
+
+  .compactSection {
+    padding: 20px 0 54px;
+  }
+
+  .hero {
+    padding: 76px 0 30px;
+  }
+
+  .heroCopy h1,
+  .sectionHeader h2,
+  .contactGrid h2 {
+    font-size: 2.3rem;
+  }
+
+  .heroLead {
+    font-size: 1.04rem;
+  }
+
+  .heroMetrics,
+  .signalBar,
+  .systemsGrid,
+  .architectureGrid,
+  .expertiseGrid,
+  .credentialsGrid,
+  .projectGrid,
+  .contactGrid,
+  .resumeHeader,
+  .resumeGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .projectCard {
+    grid-template-columns: 1fr;
+    padding: 18px;
+  }
+
+  .projectDiagram {
+    grid-column: auto;
+  }
+
+  .projectIndex {
+    width: 38px;
+    height: 38px;
+  }
+
+  .diagramFlow,
+  .diagramFlowCompact {
+    grid-template-columns: 1fr;
+  }
+
+  .diagramNode:not(:last-child)::after {
+    top: auto;
+    right: auto;
+    bottom: -11px;
+    left: 18px;
+    height: 10px;
+    width: 0;
+    border-top: 0;
+    border-left: 1px solid var(--line-strong);
+  }
+
+  .timeline {
+    border-left: 0;
+  }
+
+  .timelineItem {
+    grid-template-columns: 1fr;
+    gap: 6px;
+    padding: 0 0 30px 0;
+  }
+
+  .timelineItem::before {
+    display: none;
+  }
+
+  .contactGrid {
+    padding: 24px;
+  }
+
+  .siteFooter .container,
+  .resumeJob header {
+    flex-direction: column;
+  }
+
+  .resumeJob span {
+    white-space: normal;
+  }
+
+  .resumeSheet {
+    padding: 26px;
+  }
+}
+
+@media (max-width: 520px) {
+  .brand small {
+    display: none;
+  }
+
+  .heroCopy h1,
+  .sectionHeader h2,
+  .contactGrid h2 {
+    font-size: 2rem;
+  }
+
+  .heroActions,
+  .metricRow,
+  .techStack {
+    align-items: stretch;
+  }
+
+  .heroActions .button,
+  .contactActions .button {
+    width: 100%;
+  }
+
+  .terminal {
+    overflow-x: auto;
+  }
+
+  .panelFooter {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media print {
+  body {
+    background: #fff;
+  }
+
+  .siteHeader,
+  .siteFooter,
+  .resumeBack {
+    display: none;
+  }
+
+  .resumePage {
+    padding: 0;
+    background: #fff;
+  }
+
+  .resumeSheet {
+    width: 100%;
+    border: 0;
+    border-radius: 0;
+    padding: 0;
+    color: #111;
+  }
+}
