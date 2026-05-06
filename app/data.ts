@@ -457,10 +457,38 @@ export const awards = [
   }
 ];
 
+export const engineeringNotes = [
+  {
+    title: "Redis Caching Is a Contract, Not a Shortcut",
+    signal: "Latency and correctness",
+    body:
+      "The cache has to make ownership explicit: what is authoritative, how entries expire, which paths can tolerate stale reads, and what operators should inspect when behavior diverges."
+  },
+  {
+    title: "Event Logs Should Explain the System",
+    signal: "Observability",
+    body:
+      "A useful log stream carries actor, target, workflow, correlation id, and state transition. That makes moderation and order systems debuggable without reconstructing history from raw noise."
+  },
+  {
+    title: "Background Jobs Need Product Semantics",
+    signal: "Workflow reliability",
+    body:
+      "Payment disbursement, auction reassignment, reporting, and cleanup jobs should map to clear business states so retries are safe and failures are visible to humans."
+  },
+  {
+    title: "Real-time Systems Fail Through Drift",
+    signal: "State reconciliation",
+    body:
+      "Voice channels, permissions, and live moderation flows need cleanup and reconciliation paths. The hard part is keeping resources aligned after disconnects, retries, and manual intervention."
+  }
+];
+
 export const navigation = [
   { label: "Systems", href: "#systems" },
-  { label: "Projects", href: "#projects" },
+  { label: "Dossiers", href: "#dossiers" },
   { label: "Architecture", href: "#architecture" },
+  { label: "Notes", href: "#notes" },
   { label: "Expertise", href: "#expertise" },
   { label: "Experience", href: "#experience" },
   { label: "Contact", href: "#contact" }

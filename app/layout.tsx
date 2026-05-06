@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     template: "%s | Tushar Goyal"
   },
   description:
-    "Backend engineer focused on scalable APIs, distributed systems, production infrastructure, observability, and real-time backend workflows.",
+    "Backend systems portfolio for Tushar Goyal: scalable APIs, event-driven infrastructure, logging platforms, real-time workflows, and production backend services.",
   applicationName: "Tushar Goyal Portfolio",
   authors: [{ name: "Tushar Goyal", url: "https://tushar.codes" }],
   creator: "Tushar Goyal",
@@ -21,14 +21,17 @@ export const metadata: Metadata = {
     "Node.js",
     "Python",
     "Redis",
-    "Observability"
+    "Observability",
+    "Event-driven Architecture",
+    "Logging Systems",
+    "Infrastructure Dashboard"
   ],
   openGraph: {
     type: "website",
     url: "https://tushar.codes",
     title: "Tushar Goyal - Backend Engineer",
     description:
-      "Backend engineer building scalable systems, distributed infrastructure, and production APIs.",
+      "A backend engineering command center covering scalable APIs, distributed infrastructure, event ingestion, logging systems, caching, and production workflows.",
     siteName: "Tushar Goyal",
     images: [
       {
@@ -43,7 +46,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Tushar Goyal - Backend Engineer",
     description:
-      "Scalable APIs, distributed infrastructure, real-time systems, and production backend workflows.",
+      "Backend systems, event-driven infrastructure, logging platforms, caching layers, and production APIs.",
     images: ["/assets/projects/aui-bot.png"]
   },
   alternates: {
